@@ -51,7 +51,8 @@ function Calculate-Date {
         31 { "st" }
         default { "th" }
     }
-    $formattedDate = $deleteDate.ToString("MMM d") + $daySuffix
+#    $formattedDate = $deleteDate.ToString("d MMM") + $daySuffix
+    $formattedDate = ($deleteDate.ToString("d MMM").ToUpper()) + $daySuffix
     return $formattedDate
 }
 
@@ -208,7 +209,7 @@ function Process-MediaItems {
                 Copy-Item -Path $originalImagePath -Destination $tempImagePath -Force
 
                 # Apply overlay to the temp copy and get the updated path
-                $tempImagePath = Add-Overlay -imagePath $tempImagePath -text "Leaving $formattedDate" -fontColor $FONT_COLOR -backColor $BACK_COLOR -fontPath $FONT_PATH -fontSize $FONT_SIZE -padding $PADDING -backRadius $BACK_RADIUS -horizontalOffset $HORIZONTAL_OFFSET -horizontalAlign $HORIZONTAL_ALIGN -verticalOffset $VERTICAL_OFFSET -verticalAlign $VERTICAL_ALIGN
+                $tempImagePath = Add-Overlay -imagePath $tempImagePath -text "RETIRÉ LE $formattedDate" -fontColor $FONT_COLOR -backColor $BACK_COLOR -fontPath $FONT_PATH -fontSize $FONT_SIZE -padding $PADDING -backRadius $BACK_RADIUS -horizontalOffset $HORIZONTAL_OFFSET -horizontalAlign $HORIZONTAL_ALIGN -verticalOffset $VERTICAL_OFFSET -verticalAlign $VERTICAL_ALIGN
                 
                 # Upload the modified poster to Plex
                 Upload-Poster -posterPath $tempImagePath -metadataId $plexId
