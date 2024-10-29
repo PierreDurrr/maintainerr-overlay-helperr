@@ -31,10 +31,11 @@ Create a **docker-compose.yml** file with the following content:
 services:
   maintainerr-overlay-helperr:
     image: pierredurrr/maintainerr-overlay-helperr:latest
+    container_name: maintainerr-overlay-helperr
     environment:
-      PLEX_URL: "http://plex-server-ip:32400"
-      PLEX_TOKEN: "PLEX-TOKEN"
-      MAINTAINERR_URL: "http://maintainerr-ip:6246/api/collections"
+      PLEX_URL: "http://PLEX_IP:32400"
+      PLEX_TOKEN: "PLEX_TOKEN"
+      MAINTAINERR_URL: "http://MAINTAINERR_IP:MAINTAINERR_PORT/api/collections"
       IMAGE_SAVE_PATH: "/images"
       ORIGINAL_IMAGE_PATH: "/images/originals"
       TEMP_IMAGE_PATH: "/images/temp"
@@ -46,11 +47,11 @@ services:
       FONT_SIZE: "45"
       PADDING: "15"
       BACK_RADIUS: "20"
-      HORIZONTAL_OFFSET: "80"
+#      HORIZONTAL_OFFSET: "80"
       HORIZONTAL_ALIGN: "center"
-      VERTICAL_OFFSET: "40"
+#      VERTICAL_OFFSET: "40"
       VERTICAL_ALIGN: "bottom"
-      
+
       RUN_INTERVAL: "2"  # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
       - /docker_data2/maintainerr-overlay-helper/config/images:/images
