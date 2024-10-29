@@ -66,3 +66,4 @@ docker-compose up --build
 - Ensure the directories specified in IMAGE_SAVE_PATH, ORIGINAL_IMAGE_PATH, and TEMP_IMAGE_PATH exist on your system.
 - Ensure that the font file you are going to use is present in the mapped 'fonts' folder prior to running the script.
 - The script will automatically run every RUN_INTERVAL minutes. If the interval is not specified, it defaults to 8 hours.
+
