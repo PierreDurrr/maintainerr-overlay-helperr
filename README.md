@@ -30,7 +30,7 @@ Create a **docker-compose.yml** file with the following content:
 ```yaml
 services:
   maintainerr-overlay-helperr:
-    image: gsariev/maintainerr-overlay-helperr:latest
+    image: pierredurrr/maintainerr-overlay-helperr:latest
     environment:
       PLEX_URL: "http://plex-server-ip:32400"
       PLEX_TOKEN: "PLEX-TOKEN"
@@ -49,12 +49,12 @@ services:
       HORIZONTAL_OFFSET: "80"
       HORIZONTAL_ALIGN: "center"
       VERTICAL_OFFSET: "40"
-      VERTICAL_ALIGN: "top"
+      VERTICAL_ALIGN: "bottom"
       
       RUN_INTERVAL: "2"  # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
-      - ./images:/images
-      - ./fonts:/fonts
+      - /docker_data2/maintainerr-overlay-helper/config/images:/images
+      - /docker_data2/maintainerr-overlay-helper/config/fonts:/fonts
     network_mode: "bridge"
 ```
 2. Run the container
