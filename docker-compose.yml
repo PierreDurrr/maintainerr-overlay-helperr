@@ -25,6 +25,6 @@ services:
       
       RUN_INTERVAL: "2"  # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
-      - ./images:/images
-      - ./fonts:/fonts
+      - /docker_data2/maintainerr-overlay-helper/config/images:/images
+      - /docker_data2/maintainerr-overlay-helper/config/fonts:/fonts
     network_mode: "bridge"
