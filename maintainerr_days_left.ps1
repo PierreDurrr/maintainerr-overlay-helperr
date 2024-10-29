@@ -41,18 +41,18 @@ function Calculate-Date {
 
     Write-Host "Attempting to parse date: $addDate"
     $deleteDate = $addDate.AddDays($deleteAfterDays)
-    $daySuffix = switch ($deleteDate.Day) {
-        1  { "st" }
-        2  { "nd" }
-        3  { "rd" }
-        21 { "st" }
-        22 { "nd" }
-        23 { "rd" }
-        31 { "st" }
-        default { "th" }
-    }
+#    $daySuffix = switch ($deleteDate.Day) {
+#        1  { "st" }
+#        2  { "nd" }
+#        3  { "rd" }
+#        21 { "st" }
+#        22 { "nd" }
+#        23 { "rd" }
+#        31 { "st" }
+#        default { "th" }
+#    }
 #    $formattedDate = $deleteDate.ToString("d MMM") + $daySuffix
-    $formattedDate = ($deleteDate.ToString("d MMM").ToUpper()) + $daySuffix
+    $formattedDate = ($deleteDate.ToString("d MMM").ToUpper())
     return $formattedDate
 }
 
