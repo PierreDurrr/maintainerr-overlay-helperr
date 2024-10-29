@@ -20,7 +20,7 @@ jobs:
           id: build-docker-image
           run: |
             ls -la 
-            docker build . -f Dockerfile -t pierredurrr/maintainerr-overlay-helper:latest
+            docker build . -f Dockerfile -t pierredurrr/maintainerr-overlay-helperr:latest
         - name: push the docker image
           id: push-docker-image
-          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/maintainerr-overlay-helper:latest
+          run: docker push ${{secrets.DOCKERHUB_USERNAME}}/maintainerr-overlay-helperr:latest
