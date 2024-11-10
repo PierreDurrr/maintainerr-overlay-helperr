@@ -28,31 +28,40 @@ This project is a helper script that works in combination with [Maintainerr](htt
 
 Create a **docker-compose.yml** file with the following content:
 ```yaml
+version: '3.8'
+
 services:
   maintainerr-overlay-helperr:
     image: pierredurrr/maintainerr-overlay-helperr:latest
-    container_name: maintainerr-overlay-helperr
     environment:
-      PLEX_URL: "http://PLEX_IP:32400"
-      PLEX_TOKEN: "PLEX_TOKEN"
-      MAINTAINERR_URL: "http://MAINTAINERR_IP:MAINTAINERR_PORT/api/collections"
+      PLEX_URL: "http://plex-server-ip:32400"
+      PLEX_TOKEN: "PLEX-TOKEN"
+      MAINTAINERR_URL: "http://maintainerr-ip:6246/api/collections"
       IMAGE_SAVE_PATH: "/images"
       ORIGINAL_IMAGE_PATH: "/images/originals"
       TEMP_IMAGE_PATH: "/images/temp"
 
       # Change the values here to customize the overlay
-      FONT_PATH: "/fonts/AvenirNextLTPro-Bold.ttf"
+      FONT_PATH: "/fonts"
       FONT_COLOR: "#ffffff"
       BACK_COLOR: "#B20710"
       FONT_SIZE: "45"
       PADDING: "15"
       BACK_RADIUS: "20"
-#      HORIZONTAL_OFFSET: "80"
+      HORIZONTAL_OFFSET: "80"
       HORIZONTAL_ALIGN: "center"
-#      VERTICAL_OFFSET: "40"
+      VERTICAL_OFFSET: "40"
       VERTICAL_ALIGN: "bottom"
 
-      RUN_INTERVAL: "2"  # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
+      BACK_WIDTH: "1500"    # Set your desired width in pixels
+      BACK_HEIGHT: "80"    # Set your desired height in pixels
+      DATE_FORMAT: "d MMM"    # Set your desired date format between "d MMM" or "MMM d"
+      OVERLAY_TEXT: "RETIRÉ LE"    # Set your desired text to display before removal date
+      FONT_NAME: "Juventus-Fans-Bold"    # Font file name with .ttf extension. Fonts available from /fonts directory. Added Kometa's and PATTRMM's ones for consistency if you're already using one or both of these tools.
+      ENABLE_DAY_SUFFIX: false    # Enable or disable date suffix (i.e. th from November 14th). Mainly for french people
+      ENABLE_UPPERCASE: true    # Use uppercase or lowercase for date format
+      
+      RUN_INTERVAL: "2"    # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
       - /docker_data2/maintainerr-overlay-helper/config/images:/images
       - /docker_data2/maintainerr-overlay-helper/config/fonts:/fonts
