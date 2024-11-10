@@ -18,12 +18,12 @@ services:
       FONT_SIZE: "65"
       PADDING: "15"
       BACK_RADIUS: "20"
-      HORIZONTAL_OFFSET: "80"
+      HORIZONTAL_OFFSET: "0"
       HORIZONTAL_ALIGN: "center"
-      VERTICAL_OFFSET: "40"
+      VERTICAL_OFFSET: "0"
       VERTICAL_ALIGN: "bottom"
 
-      BACK_WIDTH: "1500"    # Set your desired width in pixels
+      BACK_WIDTH: "1920"    # Set your desired width in pixels
       BACK_HEIGHT: "100"    # Set your desired height in pixels
       DATE_FORMAT: "d MMM"    # Set your desired date format between "d MMM" or "MMM d"
       OVERLAY_TEXT: "RETIRÉ LE"    # Set your desired text to display before removal date
