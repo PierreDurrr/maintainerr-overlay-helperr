@@ -6,6 +6,7 @@ $IMAGE_SAVE_PATH = $env:IMAGE_SAVE_PATH
 $ORIGINAL_IMAGE_PATH = $env:ORIGINAL_IMAGE_PATH
 $TEMP_IMAGE_PATH = $env:TEMP_IMAGE_PATH
 $FONT_PATH = $env:FONT_PATH
+$FONT_NAME = $env:FONT_NAME  # Name of the font file without .ttf extension
 $FONT_COLOR = $env:FONT_COLOR
 $BACK_COLOR = $env:BACK_COLOR
 $FONT_SIZE = [int]$env:FONT_SIZE
@@ -15,8 +16,21 @@ $HORIZONTAL_OFFSET = [int]$env:HORIZONTAL_OFFSET
 $HORIZONTAL_ALIGN = $env:HORIZONTAL_ALIGN
 $VERTICAL_OFFSET = [int]$env:VERTICAL_OFFSET
 $VERTICAL_ALIGN = $env:VERTICAL_ALIGN
+$BACK_WIDTH = [int]$env:BACK_WIDTH
+$BACK_HEIGHT = [int]$env:BACK_HEIGHT
+$DATE_FORMAT = $env:DATE_FORMAT
+$OVERLAY_TEXT = $env:OVERLAY_TEXT
 $RUN_INTERVAL = [int]$env:RUN_INTERVAL
+$ENABLE_DAY_SUFFIX = [bool]($env:ENABLE_DAY_SUFFIX -eq "true")
+$ENABLE_UPPERCASE = [bool]($env:ENABLE_UPPERCASE -eq "true")
 
+# Set defaults if not provided
+if (-not $DATE_FORMAT) {
+    $DATE_FORMAT = "MMM d"
+}
+if (-not $OVERLAY_TEXT) {
+    $OVERLAY_TEXT = "Leaving"
+}
 if (-not $RUN_INTERVAL) {
     $RUN_INTERVAL = 8 * 60 * 60 # Default to 8 hours in seconds
 } else {
@@ -41,18 +55,27 @@ function Calculate-Date {
 
     Write-Host "Attempting to parse date: $addDate"
     $deleteDate = $addDate.AddDays($deleteAfterDays)
-#    $daySuffix = switch ($deleteDate.Day) {
-#        1  { "st" }
-#        2  { "nd" }
-#        3  { "rd" }
-#        21 { "st" }
-#        22 { "nd" }
-#        23 { "rd" }
-#        31 { "st" }
-#        default { "th" }
-#    }
-#    $formattedDate = $deleteDate.ToString("d MMM") + $daySuffix
-    $formattedDate = ($deleteDate.ToString("d MMM").ToUpper())
+    
+    $formattedDate = $deleteDate.ToString($DATE_FORMAT)
+    
+    if ($ENABLE_DAY_SUFFIX) {
+        $daySuffix = switch ($deleteDate.Day) {
+            1  { "st" }
+            2  { "nd" }
+            3  { "rd" }
+            21 { "st" }
+            22 { "nd" }
+            23 { "rd" }
+            31 { "st" }
+            default { "th" }
+        }
+        $formattedDate = $formattedDate + $daySuffix
+    }
+    
+    if ($ENABLE_UPPERCASE) {
+        $formattedDate = $formattedDate.ToUpper()
+    }
+    
     return $formattedDate
 }
 
@@ -79,7 +102,9 @@ function Add-Overlay {
         [int]$horizontalOffset = $HORIZONTAL_OFFSET,
         [string]$horizontalAlign = $HORIZONTAL_ALIGN,
         [int]$verticalOffset = $VERTICAL_OFFSET,
-        [string]$verticalAlign = $VERTICAL_ALIGN
+        [string]$verticalAlign = $VERTICAL_ALIGN,
+        [int]$backWidth = $BACK_WIDTH,
+        [int]$backHeight = $BACK_HEIGHT
     )
 
     Add-Type -AssemblyName System.Drawing
@@ -101,7 +126,17 @@ function Add-Overlay {
 
     # Load the custom font
     $privateFontCollection = New-Object System.Drawing.Text.PrivateFontCollection
-    $privateFontCollection.AddFontFile($fontPath)
+    if ($FONT_NAME) {
+        $selectedFontPath = Join-Path $FONT_PATH "$FONT_NAME.ttf"
+        if (Test-Path $selectedFontPath) {
+            $privateFontCollection.AddFontFile($selectedFontPath)
+        } else {
+            Write-Warning "Font $FONT_NAME not found, using default font"
+            $privateFontCollection.AddFontFile($fontPath)
+        }
+    } else {
+        $privateFontCollection.AddFontFile($fontPath)
+    }
     $fontFamily = $privateFontCollection.Families[0]
     $font = New-Object System.Drawing.Font($fontFamily, $scaledFontSize, [System.Drawing.FontStyle]::Bold)
 
@@ -111,37 +146,38 @@ function Add-Overlay {
     # Measure the text size
     $size = $graphics.MeasureString($text, $font)
 
-    # Calculate background dimensions based on text size and padding
-    $backWidth = [int]($size.Width + $scaledPadding * 2)
-    $backHeight = [int]($size.Height + $scaledPadding * 2)
+    # Use custom dimensions if provided, otherwise calculate based on text size
+    $scaledBackWidth = if ($backWidth) { [int]($backWidth * $scaleFactor) } else { [int]($size.Width + $scaledPadding * 2) }
+    $scaledBackHeight = if ($backHeight) { [int]($backHeight * $scaleFactor) } else { [int]($size.Height + $scaledPadding * 2) }
 
+    # Update the subsequent calculations to use the new variables
     switch ($horizontalAlign) {
-        "right" { $x = $image.Width - $backWidth - $scaledHorizontalOffset }
-        "center" { $x = ($image.Width - $backWidth) / 2 }
+        "right" { $x = $image.Width - $scaledBackWidth - $scaledHorizontalOffset }
+        "center" { $x = ($image.Width - $scaledBackWidth) / 2 }
         "left" { $x = $scaledHorizontalOffset }
-        default { $x = $image.Width - $backWidth - $scaledHorizontalOffset }
+        default { $x = $image.Width - $scaledBackWidth - $scaledHorizontalOffset }
     }
 
     switch ($verticalAlign) {
-        "bottom" { $y = $image.Height - $backHeight - $scaledVerticalOffset }
-        "center" { $y = ($image.Height - $backHeight) / 2 }
+        "bottom" { $y = $image.Height - $scaledBackHeight - $scaledVerticalOffset }
+        "center" { $y = ($image.Height - $scaledBackHeight) / 2 }
         "top" { $y = $scaledVerticalOffset }
-        default { $y = $image.Height - $backHeight - $scaledVerticalOffset }
+        default { $y = $image.Height - $scaledBackHeight - $scaledVerticalOffset }
     }
 
     # Draw the rounded rectangle background
     $graphics.SmoothingMode = [System.Drawing.Drawing2D.SmoothingMode]::AntiAlias
     $path = New-Object System.Drawing.Drawing2D.GraphicsPath
     $path.AddArc($x, $y, $scaledBackRadius, $scaledBackRadius, 180, 90)
-    $path.AddArc($x + $backWidth - $scaledBackRadius, $y, $scaledBackRadius, $scaledBackRadius, 270, 90)
-    $path.AddArc($x + $backWidth - $scaledBackRadius, $y + $backHeight - $scaledBackRadius, $scaledBackRadius, $scaledBackRadius, 0, 90)
-    $path.AddArc($x, $y + $backHeight - $scaledBackRadius, $scaledBackRadius, $scaledBackRadius, 90, 90)
+    $path.AddArc($x + $scaledBackWidth - $scaledBackRadius, $y, $scaledBackRadius, $scaledBackRadius, 270, 90)
+    $path.AddArc($x + $scaledBackWidth - $scaledBackRadius, $y + $scaledBackHeight - $scaledBackRadius, $scaledBackRadius, $scaledBackRadius, 0, 90)
+    $path.AddArc($x, $y + $scaledBackHeight - $scaledBackRadius, $scaledBackRadius, $scaledBackRadius, 90, 90)
     $path.CloseFigure()
     $graphics.FillPath($backBrush, $path)
 
     # Adjust the text position to account for ascent and descent
-    $textX = $x + ($backWidth - $size.Width) / 2
-    $textY = $y + ($backHeight - $size.Height) / 2
+    $textX = $x + ($scaledBackWidth - $size.Width) / 2
+    $textY = $y + ($scaledBackHeight - $size.Height) / 2
 
     $graphics.DrawString($text, $font, $brush, $textX, $textY)
 
@@ -209,7 +245,7 @@ function Process-MediaItems {
                 Copy-Item -Path $originalImagePath -Destination $tempImagePath -Force
 
                 # Apply overlay to the temp copy and get the updated path
-                $tempImagePath = Add-Overlay -imagePath $tempImagePath -text "RETIRÉ LE $formattedDate" -fontColor $FONT_COLOR -backColor $BACK_COLOR -fontPath $FONT_PATH -fontSize $FONT_SIZE -padding $PADDING -backRadius $BACK_RADIUS -horizontalOffset $HORIZONTAL_OFFSET -horizontalAlign $HORIZONTAL_ALIGN -verticalOffset $VERTICAL_OFFSET -verticalAlign $VERTICAL_ALIGN
+                $tempImagePath = Add-Overlay -imagePath $tempImagePath -text "$OVERLAY_TEXT $formattedDate" -fontColor $FONT_COLOR -backColor $BACK_COLOR -fontPath $FONT_PATH -fontSize $FONT_SIZE -padding $PADDING -backRadius $BACK_RADIUS -horizontalOffset $HORIZONTAL_OFFSET -horizontalAlign $HORIZONTAL_ALIGN -verticalOffset $VERTICAL_OFFSET -verticalAlign $VERTICAL_ALIGN
                 
                 # Upload the modified poster to Plex
                 Upload-Poster -posterPath $tempImagePath -metadataId $plexId
