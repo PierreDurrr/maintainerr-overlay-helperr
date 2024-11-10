@@ -15,7 +15,7 @@ services:
       FONT_PATH: "/fonts"
       FONT_COLOR: "#ffffff"
       BACK_COLOR: "#B20710"
-      FONT_SIZE: "45"
+      FONT_SIZE: "65"
       PADDING: "15"
       BACK_RADIUS: "20"
       HORIZONTAL_OFFSET: "80"
@@ -24,10 +24,10 @@ services:
       VERTICAL_ALIGN: "bottom"
 
       BACK_WIDTH: "1500"    # Set your desired width in pixels
-      BACK_HEIGHT: "80"    # Set your desired height in pixels
+      BACK_HEIGHT: "100"    # Set your desired height in pixels
       DATE_FORMAT: "d MMM"    # Set your desired date format between "d MMM" or "MMM d"
       OVERLAY_TEXT: "RETIRÉ LE"    # Set your desired text to display before removal date
-      FONT_NAME: "Juventus-Fans-Bold"    # Font file name with .ttf extension. Fonts available from /fonts directory. Added Kometa's and PATTRMM's ones for consistency if you're already using one or both of these tools.
+      FONT_NAME: "Roboto-Bold"    # Font file name with .ttf extension. Fonts available from /fonts directory. Added Kometa's and PATTRMM's ones for consistency if you're already using one or both of these tools.
       ENABLE_DAY_SUFFIX: false    # Enable or disable date suffix (i.e. th from November 14th). Mainly for french people
       ENABLE_UPPERCASE: true    # Use uppercase or lowercase for date format
       
