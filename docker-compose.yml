@@ -22,8 +22,16 @@ services:
       HORIZONTAL_ALIGN: "center"
       VERTICAL_OFFSET: "40"
       VERTICAL_ALIGN: "bottom"
+
+      BACK_WIDTH: "1500"    # Set your desired width in pixels
+      BACK_HEIGHT: "80"    # Set your desired height in pixels
+      DATE_FORMAT: "d MMM"    # Set your desired date format between "d MMM" or "MMM d"
+      OVERLAY_TEXT: "RETIRÉ LE"    # Set your desired text to display before removal date
+      FONT_NAME: "Juventus-Fans-Bold.ttf"    # Fonts available from /fonts directory. Added Kometa's and PATTRMM's ones for consistency if you're already using one or both of these tools.
+      ENABLE_DAY_SUFFIX: false    # Enable or disable date suffix (i.e. th from November 14th). Mainly for french people
+      ENABLE_UPPERCASE: true    # Use uppercase or lowercase for date format
       
-      RUN_INTERVAL: "2"  # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
+      RUN_INTERVAL: "2"    # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
       - /docker_data2/maintainerr-overlay-helper/config/images:/images
       - /docker_data2/maintainerr-overlay-helper/config/fonts:/fonts
