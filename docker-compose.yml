@@ -30,6 +30,8 @@ services:
       FONT_NAME: "Roboto-Bold"    # Font file name with .ttf extension. Fonts available from /fonts directory. Added Kometa's and PATTRMM's ones for consistency if you're already using one or both of these tools.
       ENABLE_DAY_SUFFIX: false    # Enable or disable date suffix (i.e. th from November 14th). Mainly for french people
       ENABLE_UPPERCASE: true    # Use uppercase or lowercase for date format
+
+      LANGUAGE: "fr-FR"    # Used for date format and month abbreviation language. You can change this as needed (e.g., "fr-FR" for French), will default to en-US if not provided.
       
       RUN_INTERVAL: "2"    # Set the run interval to after X minutes; default is 480 minutes (8 hours) if not specified
     volumes:
