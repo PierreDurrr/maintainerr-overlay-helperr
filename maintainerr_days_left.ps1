@@ -23,10 +23,14 @@ $OVERLAY_TEXT = $env:OVERLAY_TEXT
 $RUN_INTERVAL = [int]$env:RUN_INTERVAL
 $ENABLE_DAY_SUFFIX = [bool]($env:ENABLE_DAY_SUFFIX -eq "true")
 $ENABLE_UPPERCASE = [bool]($env:ENABLE_UPPERCASE -eq "true")
+$LANGUAGE = $env:LANGUAGE  # For month abbreviation. You can change this as needed (e.g., "fr-FR" for French)
 
 # Set defaults if not provided
 if (-not $DATE_FORMAT) {
     $DATE_FORMAT = "MMM d"
+}
+if (-not $LANGUAGE) {
+    $LANGUAGE = "en-US"
 }
 if (-not $OVERLAY_TEXT) {
     $OVERLAY_TEXT = "Leaving"
@@ -36,6 +40,9 @@ if (-not $RUN_INTERVAL) {
 } else {
     $RUN_INTERVAL = $RUN_INTERVAL * 60 # Convert minutes to seconds
 }
+
+# Define culture based on selected language
+$cultureInfo = New-Object System.Globalization.CultureInfo($LANGUAGE)
 
 # Define path for tracking collection state
 $CollectionStateFile = "$IMAGE_SAVE_PATH/current_collection_state.json"
@@ -110,8 +117,9 @@ function Calculate-Date {
     Write-Host "Attempting to parse date: $addDate"
     $deleteDate = $addDate.AddDays($deleteAfterDays)
     
-    $formattedDate = $deleteDate.ToString($DATE_FORMAT)
-    
+    # Format the date using the specified culture
+    $formattedDate = $deleteDate.ToString($DATE_FORMAT, $cultureInfo)
+
     if ($ENABLE_DAY_SUFFIX) {
         $daySuffix = switch ($deleteDate.Day) {
             1  { "st" }
@@ -132,6 +140,7 @@ function Calculate-Date {
     
     return $formattedDate
 }
+
 # Function to download the current poster
 function Download-Poster {
     param (
