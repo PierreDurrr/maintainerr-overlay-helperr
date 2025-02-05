@@ -32,7 +32,7 @@ version: '3.8'
 
 services:
   maintainerr-overlay-helperr:
-    image: pierredurrr/maintainerr-overlay-helperr:latest
+    image: gsariev/maintainerr-overlay-helperr:latest
     environment:
       PLEX_URL: "http://plex-server-ip:32400"
       PLEX_TOKEN: "PLEX-TOKEN"
