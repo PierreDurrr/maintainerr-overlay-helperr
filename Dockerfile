@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y \
 
 # Copy the PowerShell script and fonts into the container
 COPY maintainerr_days_left.ps1 /maintainerr_days_left.ps1
-COPY fonts/ /fonts
+COPY fonts/ /fonts/
 
 # Set the working directory
 WORKDIR /
