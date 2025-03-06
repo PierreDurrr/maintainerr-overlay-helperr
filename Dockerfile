@@ -1,5 +1,5 @@
 # Use the official PowerShell image from the Microsoft Container Registry
-FROM mcr.microsoft.com/powershell:latest
+FROM mcr.microsoft.com/powershell:7.1.3-ubuntu-20.04
 
 # Install necessary packages for your script
 RUN apt-get update && apt-get install -y \
